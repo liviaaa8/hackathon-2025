@@ -6,6 +6,7 @@ namespace App;
 
 use App\Domain\Repository\ExpenseRepositoryInterface;
 use App\Domain\Repository\UserRepositoryInterface;
+use App\Domain\Service\AuthService;
 use App\Infrastructure\Persistence\PdoExpenseRepository;
 use App\Infrastructure\Persistence\PdoUserRepository;
 use DI\ContainerBuilder;
@@ -18,6 +19,9 @@ use Slim\App;
 use Slim\Factory\AppFactory;
 use Slim\Views\Twig;
 use Slim\Views\TwigMiddleware;
+//use Slim\Csrf\Guard;
+
+
 
 use function DI\autowire;
 use function DI\factory;
@@ -35,48 +39,80 @@ class Kernel
             LoggerInterface::class            => function () {
                 $logger = new Logger('app');
                 $logger->pushHandler(new StreamHandler(__DIR__.'/../var/app.log', Level::Debug));
-
                 return $logger;
             },
 
             // Define a factory for Twig view renderer
             Twig::class                       => function () {
-                return Twig::create(__DIR__.'/../templates', ['cache' => false]);
+                 $twig=Twig::create(__DIR__.'/../templates', ['cache' => false]);
+                 return $twig;
             },
 
             // Define a factory for PDO database connection
             PDO::class                        => factory(function () {
-                static $pdo = null;
-                if ($pdo === null) {
-                    $pdo = new PDO('sqlite:'.$_ENV['DB_PATH']);
+                $dbPath='C:/Users/teoca/Desktop/programming/hackathon-2025-main/database/db.sqlite';
+
+                //check if thedb directory exists
+                if(!file_exists(dirname($dbPath))){
+                    mkdir(dirname($dbPath), 0777, true);
+                }
+                try{
+                    $pdo = new PDO('sqlite:'.$dbPath);
                     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-                }
 
-                return $pdo;
+                    $pdo->exec("
+                    CREATE TABLE IF NOT EXISTS users (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT NOT NULL UNIQUE, 
+                    password_hash TEXT NOT NULL UNIQUE, 
+                    created_at DATETIME NOT NULL)
+                    ");
+                    return $pdo;
+                }catch (\PDOException $e){
+                    throw new \RuntimeException("Not connected to the database " .$e->getMessage());
+                }
             }),
 
             // Map interfaces to concrete implementations
             UserRepositoryInterface::class    => autowire(PdoUserRepository::class),
             ExpenseRepositoryInterface::class => autowire(PdoExpenseRepository::class),
+            AuthService::class=> autowire()->constructorParameter('users', \DI\get(UserRepositoryInterface::class)) //authentification service
         ]);
+
         $container = $builder->build();
+        self::initialiseSession();
 
         // Create an application instance and configure
+
         AppFactory::setContainer($container);
         $app = AppFactory::create();
+
         $app->add(TwigMiddleware::createFromContainer($app, Twig::class));
+
         (require __DIR__.'/../config/settings.php')($app);
         (require __DIR__.'/../config/routes.php')($app);
 
         // TODO: Handle session initialization
-
         // Make current user ID globally available to twig templates
         // TODO: change the following line to set the user ID stored in the session, for when user is logged
-        $loggedInUserId = null;
+
         $twig = $container->get(Twig::class);
-        $twig->getEnvironment()->addGlobal('currentUserId', $loggedInUserId);
+        $twig->getEnvironment()->addGlobal('currentUserId', $_SESSION['user_id'] ?? null);
+        $twig->getEnvironment()->addGlobal('currentUsername', $_SESSION['username'] ?? null);
 
         return $app;
+    }
+
+    private static function initialiseSession(): void{
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start(['name'=>'expense_tracker',
+                'cookie_lifetime'=>86400,
+                'cookie_secure'=>true,
+                'cookie_httponly'=>true,
+                'cookie_samesite'=>'Strict',
+                'use_strict_mode'=>true ]);
+        }
+
     }
 }

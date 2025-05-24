@@ -28,7 +28,6 @@ class PdoUserRepository implements UserRepositoryInterface
         if (false === $data) {
             return null;
         }
-
         return new User(
             $data['id'],
             $data['username'],
@@ -40,11 +39,47 @@ class PdoUserRepository implements UserRepositoryInterface
     public function findByUsername(string $username): ?User
     {
         // TODO: Implement findByUsername() method.
-        return null;
+        $query = 'SELECT * FROM users WHERE username = :username';
+        $statement = $this->pdo->prepare($query);
+        $statement->execute(['username' => $username]);
+        $data = $statement->fetch();
+        if ($data===false) {
+            return null;
+        }
+        return new User(
+            $data['id'],
+            $data['username'],
+            $data['password_hash'],
+            new DateTimeImmutable($data['created_at'])
+        );
+
     }
 
     public function save(User $user): void
     {
+
         // TODO: Implement save() method.
+        //i lll create 2 other methods in order to save a user
+        if($user->id===null){
+            $this->addUser($user);
+        }else{
+            $this->updateUser($user);
+        }
+    }
+
+    public function addUser(User $user): void{
+        $query='INSERT INTO users (username, password_hash, created_at) VALUES (:username, :password_hash, :created_at)';
+        $statement = $this->pdo->prepare($query);
+        $statement->execute([
+            'username'=>$user->username, 'password_hash'=>$user->passwordHash, 'created_at'=>$user->createdAt->format('Y-m-d H:i:s')
+        ]);
+
+        $user->id=(int) $this->pdo->lastInsertId();
+    }
+
+    public function updateUser(User $user): void{
+        $query='UPDATE user SET username=:username, password_hash=:password_hash, updated_at=:updated_at WHERE id=:id';
+        $statement = $this->pdo->prepare($query);
+        $statement->execute(['id'=>$user->id, 'username'=>$user->username, 'password_hash'=>$user->passwordHash]);
     }
 }
