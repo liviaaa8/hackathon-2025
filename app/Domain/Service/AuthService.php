@@ -57,7 +57,7 @@ class AuthService
         // TODO: make sure the user exists and the password matches
         $user = $this->users->findByUsername($username);
 
-        if ($user === null || !password_verify($password, $user->passwordHash)) {
+        if ($user == null || !password_verify($password, $user->passwordHash)) {
             return false;
         }
 

@@ -54,7 +54,7 @@ class AuthController extends BaseController
 
     public function showLogin(Request $request, Response $response): Response
     {
-        return $this->view->render($response, 'auth/login.twig');
+        return $this->render($response, 'auth/login.twig');
     }
 
     public function login(Request $request, Response $response): Response
@@ -64,10 +64,11 @@ class AuthController extends BaseController
         $username = $data['username'] ?? '';
         $password = $data['password'] ?? '';
 
-        if(!$this->authService->attempt($username, $password)){
-            return $this->view->render($response, 'auth/login.twig', [
+        if(!$this->authService->attempt($username, $password))
+        {
+            return $this->render($response, 'auth/login.twig', [
+                'error' => 'Log in failed. Try again. Check username and password.',
                 'username' => $username,
-                'errors' => 'Log in failed. Try again. Check username and password',
             ]);
         }
         $this->logger->info(sprintf('User %s Logged in.', $username));

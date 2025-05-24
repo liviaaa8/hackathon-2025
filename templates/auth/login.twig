@@ -6,7 +6,7 @@
         <div class="mb-4 p-4 bg-red-100 text-red-700 rounded">{{ error }}</div>
     {% endif %}
     <form action="/login" method="POST" class="max-w-sm mx-auto">
-        <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
+     <input type="hidden" name="{{ csrf.keys.name }}" value="{{ csrf.name }}">
         <input type="hidden" name="{{ csrf.keys.value }}" value="{{ csrf.value }}">
         <div class="mb-4">
             <label for="username" class="block text-gray-400 text-sm font-bold mb-2">Username</label>

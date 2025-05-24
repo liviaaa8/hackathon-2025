@@ -50,7 +50,7 @@ class Kernel
 
             // Define a factory for PDO database connection
             PDO::class                        => factory(function () {
-                $dbPath='C:/Users/teoca/Desktop/programming/hackathon-2025-main/database/db.sqlite';
+                $dbPath= __DIR__.'/../../database/db.sqlite';
 
                 //check if thedb directory exists
                 if(!file_exists(dirname($dbPath))){
