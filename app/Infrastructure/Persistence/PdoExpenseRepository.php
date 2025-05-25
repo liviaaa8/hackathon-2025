@@ -176,9 +176,9 @@ class PdoExpenseRepository implements ExpenseRepositoryInterface
                 $where[]='strftime("%Y", date) = :year';
                 $params['year']=(string)$value;
             }elseif($key==='month'){
-                $mounthPadded = str_pad((string)$value, 2, '0', STR_PAD_LEFT);
+                $monthPadded = str_pad((string)$value, 2, '0', STR_PAD_LEFT);
                 $where[]='strftime("%m", date) = :month';
-                $params['month']=$mounthPadded;
+                $params['month']=$monthPadded;
             }else{
                 $where[]="$key= :$key";
                 $params[$key]=$value;
@@ -212,9 +212,9 @@ class PdoExpenseRepository implements ExpenseRepositoryInterface
                 $where[]='strftime("%Y", date) = :year';
                 $params['year']=(string)$value;
             }elseif($key==='month'){
-                $mounthPadded = str_pad((string)$value, 2, '0', STR_PAD_LEFT);
+                $monthPadded = str_pad((string)$value, 2, '0', STR_PAD_LEFT);
                 $where[]='strftime("%m", date) = :month';
-                $params['month']=$mounthPadded;
+                $params['month']=$monthPadded;
             }else{
                 $where[]="$key= :$key";
                 $params[$key]=$value;
@@ -248,9 +248,9 @@ class PdoExpenseRepository implements ExpenseRepositoryInterface
                 $where[]='strftime("%Y", date) = :year';
                 $params['year']=(string)$value;
             }elseif($key==='month'){
-                $mounthPadded = str_pad((string)$value, 2, '0', STR_PAD_LEFT);
+                $monthPadded = str_pad((string)$value, 2, '0', STR_PAD_LEFT);
                 $where[]='strftime("%m", date) = :month';
-                $params['month']=$mounthPadded;
+                $params['month']=$monthPadded;
             }else{
                 $where[]="$key= :$key";
                 $params[$key]=$value;

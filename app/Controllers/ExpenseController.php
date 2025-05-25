@@ -13,7 +13,7 @@ class ExpenseController extends BaseController
 {
     private const PAGE_SIZE = 20;
     private const DEFAULT_CATEGORIES=[
-        'groceries','utilities',  'transport','entertainment', 'housing', 'health', 'other'
+        'Groceries','Utilities',  'Transport','Entertainment', 'Housing', 'Health', 'Other'
     ];
 
     public function __construct(

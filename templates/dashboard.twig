@@ -12,7 +12,7 @@
                 <div class="bg-green-900/50 border border-green-700 rounded-lg p-4 mb-4">
                     <p class="text-green-300">✅ {{ alert.message }}</p>
                 </div>
-            {% elseif alert.type == 'warning' %}
+            {% elseif alert.type == 'danger' %}
                 <div class="bg-red-900/50 border border-red-700 rounded-lg p-4 mb-4">
                     <p class="text-red-300">⚠ {{ alert.message }}</p>
                 </div>
@@ -66,7 +66,7 @@
 
         {# TODO: follow the example above and replicate the markup and twig logic for the averages below #}
         <div class="mt-6">
-            <h3 class="text-lg font-bold mb-2">Per-category <strong>averages</strong> for month 5 of 2025</h3>
+            <h3 class="text-lg font-bold mb-2">Per-category <strong>averages</strong> for month {{  month }} of {{ year }}</h3>
             <div class="space-y-4 mb-2">
                 {% for categoryData in averagesForCategories %}
                     <div class="relative">
