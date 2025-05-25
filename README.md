@@ -111,5 +111,6 @@ Features fully implemented:
 - register/login/logout fully functional (hashed password)
 - expenses -add, edit, delete
 - dashboard
+- CSV import file fully functional
 
 Other instructions about setting up the application (if any): ...
