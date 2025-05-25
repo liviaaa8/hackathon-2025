@@ -108,6 +108,8 @@ Participant:
 - Email address: teocanache88@gmail.com
 
 Features fully implemented:
-- ...
+- register/login/logout fully functional (hashed password)
+- expenses -add, edit, delete
+- dashboard
 
 Other instructions about setting up the application (if any): ...

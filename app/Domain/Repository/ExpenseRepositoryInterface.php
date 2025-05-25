@@ -22,11 +22,13 @@ interface ExpenseRepositoryInterface
 
     public function countBy(array $criteria): int;
 
-    public function listExpenditureYears(User $user): array;
+    public function listExpenditureYears(int $userId): array;
 
     public function sumAmountsByCategory(array $criteria): array;
 
     public function averageAmountsByCategory(array $criteria): array;
 
     public function sumAmounts(array $criteria): float;
+    public function getAvailableYears(int $userId):array;
+
 }

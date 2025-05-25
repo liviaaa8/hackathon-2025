@@ -19,7 +19,6 @@ use Slim\App;
 use Slim\Factory\AppFactory;
 use Slim\Views\Twig;
 use Slim\Views\TwigMiddleware;
-//use Slim\Csrf\Guard;
 
 
 
@@ -50,7 +49,7 @@ class Kernel
 
             // Define a factory for PDO database connection
             PDO::class                        => factory(function () {
-                $dbPath= __DIR__.'/../../database/db.sqlite';
+                $dbPath= "C:/Users/teoca/Desktop/hackathon-2025/database/db.sqlite";
 
                 //check if thedb directory exists
                 if(!file_exists(dirname($dbPath))){
@@ -60,14 +59,6 @@ class Kernel
                     $pdo = new PDO('sqlite:'.$dbPath);
                     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
-                    $pdo->exec("
-                    CREATE TABLE IF NOT EXISTS users (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    username TEXT NOT NULL UNIQUE, 
-                    password_hash TEXT NOT NULL UNIQUE, 
-                    created_at DATETIME NOT NULL)
-                    ");
                     return $pdo;
                 }catch (\PDOException $e){
                     throw new \RuntimeException("Not connected to the database " .$e->getMessage());
